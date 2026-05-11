@@ -75,9 +75,9 @@ public class DocumentUploadController {
     @GetMapping("/fichier/{nomFichier}")
     public ResponseEntity<byte[]> getFichier(@PathVariable String nomFichier) {
         try {
+            System.out.println("=== GET FICHIER === " + nomFichier);
             byte[] contenu = fileStorageService.lireFichier(nomFichier);
 
-            // Détecter le type
             MediaType mediaType = MediaType.APPLICATION_OCTET_STREAM;
             String nomLower = nomFichier.toLowerCase();
             if (nomLower.endsWith(".jpg") || nomLower.endsWith(".jpeg")) {
@@ -91,8 +91,10 @@ public class DocumentUploadController {
             return ResponseEntity.ok()
                     .contentType(mediaType)
                     .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + nomFichier + "\"")
+                    .header("Access-Control-Allow-Origin", "*")
                     .body(contenu);
         } catch (IOException e) {
+            System.out.println("=== ERREUR FICHIER === " + e.getMessage());
             return ResponseEntity.notFound().build();
         }
     }

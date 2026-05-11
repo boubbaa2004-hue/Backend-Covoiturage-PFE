@@ -15,9 +15,12 @@ public class FileStorageService {
     private String uploadDir;
 
     public String sauvegarderFichier(MultipartFile fichier, String prefixe) throws IOException {
-        Path uploadPath = Paths.get(uploadDir);
+        Path uploadPath = Paths.get(uploadDir).toAbsolutePath();
+        System.out.println("=== UPLOAD === Dossier : " + uploadPath);
+
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
+            System.out.println("=== UPLOAD === Dossier créé !");
         }
 
         String nomOriginal = fichier.getOriginalFilename();
@@ -26,15 +29,15 @@ public class FileStorageService {
             extension = nomOriginal.substring(nomOriginal.lastIndexOf(".")).toLowerCase();
         }
 
-        // Accepter photos et PDF
         if (!extension.equals(".jpg") && !extension.equals(".jpeg")
                 && !extension.equals(".png") && !extension.equals(".pdf")) {
-            throw new IOException("Format non supporté. Utilisez JPG, PNG ou PDF.");
+            throw new IOException("Format non supporté: " + extension);
         }
 
         String nomFichier = prefixe + "_" + UUID.randomUUID() + extension;
         Path cheminFichier = uploadPath.resolve(nomFichier);
         Files.copy(fichier.getInputStream(), cheminFichier, StandardCopyOption.REPLACE_EXISTING);
+        System.out.println("=== UPLOAD === Fichier sauvegardé : " + cheminFichier);
 
         return nomFichier;
     }

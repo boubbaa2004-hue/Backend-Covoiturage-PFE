@@ -29,10 +29,8 @@ public class AuthService {
 
         if (request.getRole() == Role.CONDUCTEUR) {
             Conducteur conducteur = new Conducteur();
-            conducteur.setPermisConduire(request.getPermisConduire());
-            conducteur.setPieceIdentite(request.getPieceIdentite());
+            // Ne pas mettre permis/cin ici — ils seront uploadés après
             conducteur.setMarqueVoiture(request.getMarqueVoiture());
-            conducteur.setPhotoVoiture(request.getPhotoVoiture());
             conducteur.setEstVerifie(false);
             conducteur.setStatutVerification("EN_ATTENTE");
             utilisateur = conducteur;
