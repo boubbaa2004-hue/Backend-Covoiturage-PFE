@@ -9,8 +9,11 @@ import java.util.Optional;
 
 @Repository
 public interface ColisRepository extends JpaRepository<Colis, Long> {
+    Optional<Colis> findByCodeOTP(String codeOTP);
     List<Colis> findByExpediteur(Utilisateur expediteur);
     List<Colis> findByConducteur(Utilisateur conducteur);
-    Optional<Colis> findByCodeOTP(String codeOTP);
     List<Colis> findByStatut(String statut);
+    List<Colis> findByOffreLivraison_ConducteurOrConducteur(
+            Utilisateur conducteurOffre, Utilisateur conducteurDirect
+    );
 }

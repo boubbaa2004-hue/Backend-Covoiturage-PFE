@@ -55,4 +55,17 @@ public class AdminController {
         utilisateurRepository.save(u);
         return ResponseEntity.ok().build();
     }
+    @GetMapping("/api/admin/stats-public")
+    public ResponseEntity<?> getStatsPubliques() {
+        long totalUsers = utilisateurRepo.count();
+        long totalConducteurs = utilisateurRepo.countByRole("CONDUCTEUR");
+        long totalColisLivres = colisRepo.countByStatut("LIVRE");
+
+        return ResponseEntity.ok(Map.of(
+                "totalUtilisateurs", totalUsers,
+                "totalConducteurs", totalConducteurs,
+                "totalColisLivres", totalColisLivres,
+                "noteMoyenne", 4.8
+        ));
+    }
 }

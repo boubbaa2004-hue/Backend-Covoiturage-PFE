@@ -3,6 +3,7 @@ package com.covoLiv.backend.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -34,17 +35,44 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
+                        // Swagger
+                        .requestMatchers(
+                                "/swagger-ui/**", "/swagger-ui.html",
+                                "/v3/api-docs/**", "/v3/api-docs",
+                                "/swagger-resources/**", "/webjars/**"
+                        ).permitAll()
+
+                        // Auth publique
                         .requestMatchers("/api/auth/**").permitAll()
+
+                        // Trajets publics
                         .requestMatchers("/api/trajets/**").permitAll()
+
+                        // Suivi colis public
                         .requestMatchers("/api/colis/suivi/**").permitAll()
+
+                        // Documents
                         .requestMatchers("/api/documents/fichier/**").permitAll()
                         .requestMatchers("/api/documents/upload").authenticated()
                         .requestMatchers("/api/documents/en-attente").hasRole("ADMIN")
                         .requestMatchers("/api/documents/*/valider").hasRole("ADMIN")
                         .requestMatchers("/api/documents/*/rejeter").hasRole("ADMIN")
+
+                        //  TRACKING — avant les règles générales
+                        .requestMatchers(HttpMethod.GET, "/api/tracking/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/tracking/**").authenticated()
+
+                        // Offres livraison publiques
+                        .requestMatchers(HttpMethod.GET, "/api/offres-livraison/disponibles").permitAll()
+
+                        // Reste
                         .requestMatchers("/api/evaluations/**").authenticated()
                         .requestMatchers("/api/litiges/**").authenticated()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/conducteurs/**").authenticated()
+                        .requestMatchers("/api/colis/**").authenticated()
+                        .requestMatchers("/api/offres-livraison/**").authenticated()
+                        .requestMatchers("/api/admin/stats-public").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess

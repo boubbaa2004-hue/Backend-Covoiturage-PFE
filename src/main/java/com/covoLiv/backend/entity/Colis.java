@@ -6,47 +6,37 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "colis")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Colis {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String description;
-
-    @Column(nullable = false)
     private Float poids;
-
-    @Column(nullable = false)
     private String villeDepart;
-
-    @Column(nullable = false)
     private String villeArrivee;
-
     private String nomDestinataire;
     private String telephoneDestinataire;
-
-    @Column(unique = true)
+    private Float prix;
     private String codeOTP;
 
-    @Column(nullable = false)
-    private String statut = "EN_ATTENTE"; // EN_ATTENTE, EN_TRANSIT, LIVRE, ANNULE
+    // EN_ATTENTE → PRIX_PROPOSE → ACCEPTE → EN_TRANSIT → LIVRE
+    private String statut = "EN_ATTENTE";
 
     private LocalDateTime dateCreation;
     private LocalDateTime dateLivraison;
 
-    private Float prix;
-
     @ManyToOne
-    @JoinColumn(name = "expediteur_id", nullable = false)
+    @JoinColumn(name = "expediteur_id")
     private Utilisateur expediteur;
 
     @ManyToOne
     @JoinColumn(name = "conducteur_id")
     private Utilisateur conducteur;
+
+    @ManyToOne
+    @JoinColumn(name = "offre_livraison_id")
+    private OffreLivraison offreLivraison;
 }

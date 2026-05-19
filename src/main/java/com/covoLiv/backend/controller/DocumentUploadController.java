@@ -31,8 +31,17 @@ public class DocumentUploadController {
             @RequestParam(value = "cin", required = false) MultipartFile cin,
             @RequestParam(value = "photoVoiture", required = false) MultipartFile photoVoiture,
             @RequestParam(value = "carteGrise", required = false) MultipartFile carteGrise,
+            @RequestParam(value = "photoProfile", required = false) MultipartFile photoProfile,
             @RequestParam(value = "marqueVoiture", required = false) String marqueVoiture,
             @AuthenticationPrincipal UserDetails userDetails) {
+
+        System.out.println("=== UPLOAD DOCUMENTS ===");
+        System.out.println("permis: " + (permis != null ? permis.getOriginalFilename() : "NULL"));
+        System.out.println("cin: " + (cin != null ? cin.getOriginalFilename() : "NULL"));
+        System.out.println("photoVoiture: " + (photoVoiture != null ? photoVoiture.getOriginalFilename() : "NULL"));
+        System.out.println("photoProfile: " + (photoProfile != null ? photoProfile.getOriginalFilename() : "NULL"));
+        System.out.println("marqueVoiture: " + marqueVoiture);
+        System.out.println("========================");
 
         try {
             Utilisateur u = utilisateurRepository.findByEmail(userDetails.getUsername())
@@ -43,20 +52,21 @@ public class DocumentUploadController {
             }
 
             if (permis != null && !permis.isEmpty()) {
-                String nom = fileStorageService.sauvegarderFichier(permis, "permis_" + u.getId());
-                c.setPermisConduire(nom);
+                c.setPermisConduire(fileStorageService.sauvegarderFichier(permis, "permis_" + u.getId()));
             }
             if (cin != null && !cin.isEmpty()) {
-                String nom = fileStorageService.sauvegarderFichier(cin, "cin_" + u.getId());
-                c.setPieceIdentite(nom);
+                c.setPieceIdentite(fileStorageService.sauvegarderFichier(cin, "cin_" + u.getId()));
             }
             if (photoVoiture != null && !photoVoiture.isEmpty()) {
-                String nom = fileStorageService.sauvegarderFichier(photoVoiture, "voiture_" + u.getId());
-                c.setPhotoVoiture(nom);
+                c.setPhotoVoiture(fileStorageService.sauvegarderFichier(photoVoiture, "voiture_" + u.getId()));
             }
             if (carteGrise != null && !carteGrise.isEmpty()) {
-                String nom = fileStorageService.sauvegarderFichier(carteGrise, "carte_grise_" + u.getId());
-                c.setCarteGrise(nom);
+                c.setCarteGrise(fileStorageService.sauvegarderFichier(carteGrise, "carte_grise_" + u.getId()));
+            }
+            if (photoProfile != null && !photoProfile.isEmpty()) {
+                String nomProfile = fileStorageService.sauvegarderFichier(photoProfile, "profile_" + u.getId());
+                System.out.println("=== PHOTO PROFILE SAUVEGARDÉE : " + nomProfile + " ===");
+                c.setPhotoProfile(nomProfile);
             }
             if (marqueVoiture != null) {
                 c.setMarqueVoiture(marqueVoiture);
@@ -64,10 +74,11 @@ public class DocumentUploadController {
 
             c.setStatutVerification("EN_ATTENTE");
             utilisateurRepository.save(c);
+            System.out.println("=== CONDUCTEUR SAUVEGARDÉ ===");
 
             return ResponseEntity.ok("Documents soumis avec succès");
-
         } catch (IOException e) {
+            System.out.println("=== ERREUR : " + e.getMessage() + " ===");
             return ResponseEntity.status(500).body("Erreur: " + e.getMessage());
         }
     }
@@ -119,6 +130,7 @@ public class DocumentUploadController {
                     r.setEstVerifie(c.getEstVerifie());
                     r.setStatutVerification(c.getStatutVerification());
                     r.setEstActif(c.getEstActif());
+                    r.setPhotoProfile(c.getPhotoProfile());
                     return r;
                 })
                 .collect(Collectors.toList());

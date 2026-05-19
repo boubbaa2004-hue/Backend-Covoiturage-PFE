@@ -4,20 +4,19 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class TrajetResponse {
+public class OffreLivraisonResponse {
     private Long id;
     private String villeDepart;
     private String villeArrivee;
-    private LocalDateTime dateHeure;
-    private Integer placesDisponibles;
-    private Float prixParPlace;
-    private Float volumeCoffre;
+    private Float prixParKg;
+    private Float poidsMax;
     private String description;
     private String statut;
+    private LocalDateTime dateCreation;
     private Long conducteurId;
     private String nomConducteur;
-    private Float noteConducteur;
-    private String photoVoiture;
     private String photoProfile;
     private String marqueVoiture;
+    private Float noteConducteur;
+    private Float poidsRestant;
 }

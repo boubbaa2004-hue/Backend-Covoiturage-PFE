@@ -78,24 +78,30 @@ public class TrajetService {
         trajetRepository.save(trajet);
     }
 
-    private TrajetResponse mapToResponse(Trajet trajet) {
-        TrajetResponse response = new TrajetResponse();
-        response.setId(trajet.getId());
-        response.setVilleDepart(trajet.getVilleDepart());
-        response.setVilleArrivee(trajet.getVilleArrivee());
-        response.setDateHeure(trajet.getDateHeure());
-        response.setPlacesDisponibles(trajet.getPlacesDisponibles());
-        response.setVolumeCoffre(trajet.getVolumeCoffre());
-        response.setPrixParPlace(trajet.getPrixParPlace());
-        response.setStatut(trajet.getStatut());
-        response.setDescription(trajet.getDescription());
-        response.setNomConducteur(trajet.getConducteur().getNom());
-        response.setConducteurId(trajet.getConducteur().getId());
-        response.setNoteConducteur(trajet.getConducteur().getNoteMoyenne());
-        if (trajet.getConducteur() instanceof Conducteur c) {
-            response.setConducteurVerifie(c.getEstVerifie());
-        }
-        return response;
-    }
+    private TrajetResponse mapToResponse(Trajet t) {
+        TrajetResponse r = new TrajetResponse();
+        r.setId(t.getId());
+        r.setVilleDepart(t.getVilleDepart());
+        r.setVilleArrivee(t.getVilleArrivee());
+        r.setDateHeure(t.getDateHeure());
+        r.setPlacesDisponibles(t.getPlacesDisponibles());
+        r.setPrixParPlace(t.getPrixParPlace());
+        r.setVolumeCoffre(t.getVolumeCoffre());
+        r.setDescription(t.getDescription());
+        r.setStatut(t.getStatut());
 
+        if (t.getConducteur() != null) {
+            r.setConducteurId(t.getConducteur().getId());
+            r.setNomConducteur(t.getConducteur().getNom());
+            r.setNoteConducteur(t.getConducteur().getNoteMoyenne());
+
+            // Ajoute photo voiture et marque
+            if (t.getConducteur() instanceof com.covoLiv.backend.entity.Conducteur c) {
+                r.setPhotoVoiture(c.getPhotoVoiture());
+                r.setMarqueVoiture(c.getMarqueVoiture());
+                r.setPhotoProfile(c.getPhotoProfile());
+            }
+        }
+        return r;
+    }
 }

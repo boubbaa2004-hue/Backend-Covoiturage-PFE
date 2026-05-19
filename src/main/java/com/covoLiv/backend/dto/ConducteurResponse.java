@@ -16,4 +16,6 @@ public class ConducteurResponse {
     private Boolean estVerifie;
     private String statutVerification;
     private Boolean estActif;
+    private String photoProfile;
+
 }

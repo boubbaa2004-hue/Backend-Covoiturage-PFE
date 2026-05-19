@@ -16,4 +16,5 @@ public class Conducteur extends Utilisateur {
     private Boolean estVerifie = false;
     private String statutVerification = "EN_ATTENTE";
     private String carteGrise;
+    private String photoProfile;
 }
